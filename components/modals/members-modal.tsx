@@ -42,14 +42,34 @@ const MembersModal = () => {
     const [loadingId,setLoadingId] = useState('');
     const router = useRouter()
 
+    const onKick = async(memberId:string) =>{
+        try {
+            setLoadingId(memberId);
+            const url = qs.stringifyUrl({
+                url:`/api/members/${memberId}`,
+                query:{
+                    serverId:server.id
+                }
+            })
+
+            const response = await axios.delete(url);
+            router.refresh();
+            onOpen('members',{server:response.data})
+        } catch (error) {
+            console.log("KICK MEMBER",error);
+        }
+        finally{
+            setLoadingId('')
+        }
+    }
+
     const onRoleChange = async(memberId:string, role:MemberRole) => {
         try {
             setLoadingId(memberId);
             const url = qs.stringifyUrl({
                 url:`/api/members/${memberId}`,
                 query:{
-                    serverId:server?.id,
-                    memberId:memberId
+                    serverId:server?.id
                 }
             })
 
@@ -75,14 +95,14 @@ const MembersModal = () => {
                     <DialogDescription
                     className="text-center text-zinc-500"
                     >
-                        {server?.members.length} {server?.members.length === 1 ? 'member' : 'members'}
+                        {server?.members?.length} {server?.members?.length === 1 ? 'member' : 'members'}
                     </DialogDescription>
                 </DialogHeader>
 
                 <ScrollArea 
                 className="mt-8 max-h-[420px] pr-6">
                     {
-                        server?.members.map(member => (
+                        server?.members?.map(member => (
                             <div key={member.id} className="flex items-center gap-x-2 mb-6">
                                 <UserAvatar src={member.profile.imageUrl}/>
                                 <div className="flex flex-col gap-y-1">
@@ -139,7 +159,10 @@ const MembersModal = () => {
                                                         </DropdownMenuPortal>
                                                     </DropdownMenuSub>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="text-rose-500">
+                                                    <DropdownMenuItem 
+                                                    onClick={() => onKick(member.id)}
+                                                    className="text-rose-500"
+                                                    >
                                                         <Gavel className="h-4 w-4 mr-2"/>
                                                         Kick
                                                     </DropdownMenuItem>

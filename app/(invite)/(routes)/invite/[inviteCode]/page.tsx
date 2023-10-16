@@ -29,7 +29,7 @@ const InvitePage = async({params}:InviteProps) => {
             }
         }
     })
-
+    
     if(existingServer){
         return redirect(`/servers/${existingServer.id}`);
     }
