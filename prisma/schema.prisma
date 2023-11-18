@@ -49,7 +49,7 @@ model Member {
   profile   Profile @relation(fields: [profileId], references: [id])
   profileId String
 
-  server   Server @relation(fields: [serverId], references: [id])
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
   serverId String
 
   createdAt DateTime @default(now())
@@ -73,7 +73,7 @@ model Channel {
   profile   Profile @relation(fields: [profileId], references: [id])
   profileId String
 
-  server   Server @relation(fields: [serverId], references: [id])
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
   serverId String
 
   createdAt DateTime @default(now())
