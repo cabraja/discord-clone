@@ -1,8 +1,7 @@
 export default function getOS() {
-    let userAgent = window.navigator.userAgent.toLowerCase(),
+    let userAgent = window?.navigator.userAgent.toLowerCase(),
       macosPlatforms = /(macintosh|macintel|macppc|mac68k|macos)/i,
       windowsPlatforms = /(win32|win64|windows|wince)/i,
-      iosPlatforms = /(iphone|ipad|ipod)/i,
       os = null;
   
     if (macosPlatforms.test(userAgent)) {
