@@ -37,11 +37,11 @@ function ServerSearch({data}:ServerSearchProps) {
         setOpen(false);
 
         if(type === 'member'){
-            router.push(`/servers/${params.serverId}/conversations/${id}`);
+            router.push(`/servers/${params?.serverId}/conversation/${id}`);
         }
 
         if(type === 'channel'){
-            router.push(`servers/${params.serverId}/chanells/${id}`);
+            router.push(`/servers/${params?.serverId}/channels/${id}`);
         }
     }
 
