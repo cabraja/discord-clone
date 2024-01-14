@@ -1,6 +1,7 @@
-import { currentProfilePages } from "@/lib/current-profile-pages";
-import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
+
+import { NextApiResponseServerIo } from "@/types";
+import { currentProfilePages } from "@/lib/current-profile-pages";
 import db from "@/lib/db";
 
 export default async function handler(
@@ -47,7 +48,7 @@ export default async function handler(
     });
 
     if (!server) {
-      return res.status(404).json({ error: "Server not found" });
+      return res.status(404).json({ message: "Server not found" });
     }
 
     const channel = await db.channel.findFirst({
@@ -58,18 +59,23 @@ export default async function handler(
     });
 
     if (!channel) {
-      return res.status(404).json({ error: "Channel not found" });
+      return res.status(404).json({ message: "Channel not found" });
     }
 
     const member = server.members.find(
       (member) => member.profileId === profile.id
     );
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
     const message = await db.message.create({
       data: {
         content,
         fileUrl,
         channelId: channelId as string,
-        memberId: member?.id,
+        memberId: member.id,
       },
       include: {
         member: {
@@ -81,10 +87,12 @@ export default async function handler(
     });
 
     const channelKey = `chat:${channelId}:messages`;
+
     res?.socket?.server?.io?.emit(channelKey, message);
+
     return res.status(200).json(message);
   } catch (error) {
     console.log("[MESSAGES_POST]", error);
-    return res.status(500).json({ error: "Internal error" });
+    return res.status(500).json({ message: "Internal Error" });
   }
 }
